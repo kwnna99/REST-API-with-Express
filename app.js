@@ -62,5 +62,5 @@ app.use((err, req, res, next) => {
 app.set('port', process.env.PORT || 5000);
 
 // start listening on our port
-sequelize.sync({ force: true }).then(()=>{const server = app.listen(app.get('port'), () => {
+sequelize.sync().then(()=>{const server = app.listen(app.get('port'), () => {
   console.log(`Express server is listening on port ${server.address().port}`);})});
