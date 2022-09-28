@@ -11,6 +11,7 @@ const router = express.Router();
 const User = require('./models').User;
 const Course = require('./models').Course;
 
+//since delete and put share a lot of code, created a function to handle them at the same place and avoid repetitons
 const handleCourseAuth = async(user,courseInfo,courseId,action,cb)=>{
     let course= await Course.findByPk(courseId);
     if(course){
@@ -23,11 +24,9 @@ const handleCourseAuth = async(user,courseInfo,courseId,action,cb)=>{
             }
             cb(204,null);
         }else{
-            //res.status(403).json({"msg":"Not Authorized!"});
             cb(403,{"msg":"Not Authorized!"});
         }
     }else{
-        //res.status(404).json({"msg":"Course not found!"});
         cb(404,{"msg":"Course not found!"});
     }
 }

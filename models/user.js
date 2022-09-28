@@ -13,10 +13,20 @@ module.exports = (sequelize) => {
     firstName: {
       type: Sequelize.STRING,
       allowNull: false,
+      validate:{
+        notNull:{
+            msg:'First Name cannot be empty',
+        },
+      },
     },
     lastName: {
       type: Sequelize.STRING,
       allowNull: false,
+      validate:{
+        notNull:{
+            msg:'Last Name cannot be empty',
+        },
+      },
     },
     emailAddress: {
         type: Sequelize.STRING,
@@ -26,7 +36,7 @@ module.exports = (sequelize) => {
         },
         validate: {
           notNull: {
-            msg: 'An email is required.',
+            msg: 'Email cannot be empty.',
           },
           isEmail: {
             msg: 'This is not a valid email!',
@@ -40,6 +50,11 @@ module.exports = (sequelize) => {
             const hashedPassword = bcrypt.hashSync(val,10);
             this.setDataValue('password',hashedPassword);
         },
+        validate:{
+            notNull:{
+                msg:'Password cannot be empty',
+            },
+          },
     }
   }, { sequelize });
 
