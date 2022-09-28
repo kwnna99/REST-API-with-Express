@@ -1,4 +1,4 @@
-## This is a REST API created with Express
+## Course & User REST API (created with Express and Sequelize)
 
 It includes the routes:
 - A /api/users GET route that will return all properties and values for the currently authenticated User along with a 200 HTTP status code.
