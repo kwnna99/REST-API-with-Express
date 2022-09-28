@@ -77,35 +77,36 @@ router.get("/courses/:id",asyncHandler(async (req, res,next) => {
 );
 
 router.put('/courses/:id',authenticateUser,asyncHandler(async(req,res)=>{
-
+    const courseInfo=req.body;
+    const user = req.currentUser;
+    let course= await Course.findByPk(req.params.id);
+    if(course){
+        if(course.userId===user.id){
+            await course.update(req.body);
+            res.status(204).end();
+        }else{
+            res.status(403).json({"msg":"Not Authorized!"});
+        }
+    }else{
+        res.status(404).json({"msg":"Course not found!"});
+    }
 }))
 router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     const user = req.currentUser;
     const courseInfo= req.body;
-
-    try{
-
-        const user=await User.findByPk(courseInfo.userId);
-        if(user){
-            const course= await Course.create({title: courseInfo.title,
-                description: courseInfo.description,
-                estimatedTime: courseInfo.estimatedTime,
-                materialsNeeded: courseInfo.materialsNeeded,
-                userId: courseInfo.userId,});
-            res.location(`/${course.id}`);
-            res.status(201).end();
-        }else{
-            res.status(404).json({'error':'User not found'});
-        }
-    } catch(error){
-        if(error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError'){
-            const errors = error.errors.map(err => err.message);
-            res.status(400).json({ errors })
-        }
-        else{
-            throw error;
-        }
+    const owner=await User.findByPk(courseInfo.userId);
+    if(owner){
+        const course= await Course.create({title: courseInfo.title,
+            description: courseInfo.description,
+            estimatedTime: courseInfo.estimatedTime,
+            materialsNeeded: courseInfo.materialsNeeded,
+            userId: courseInfo.userId,});
+        res.location(`/${course.id}`);
+        res.status(201).end();
+    }else{
+        res.status(404).json({'error':'User not found'});
     }
-  }));
+}
+));
 
   module.exports = router;
