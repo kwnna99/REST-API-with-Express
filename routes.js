@@ -11,25 +11,6 @@ const router = express.Router();
 const User = require('./models').User;
 const Course = require('./models').Course;
 
-//since delete and put share a lot of code, created a function to handle them at the same place and avoid repetitons
-const handleCourseAuth = async(user,courseInfo,courseId,action,cb)=>{
-    let course= await Course.findByPk(courseId);
-    if(course){
-        if(course.userId===user.id){
-            switch(action){
-                case 'delete':
-                    await course.destroy();
-                case 'update':
-                    await course.update(courseInfo);
-            }
-            cb(204,null);
-        }else{
-            cb(403,{"msg":"Not Authorized!"});
-        }
-    }else{
-        cb(404,{"msg":"Course not found!"});
-    }
-}
 
 // Route that returns the authenticated user
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
@@ -111,26 +92,34 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
 router.put('/courses/:id',authenticateUser,asyncHandler(async(req,res)=>{
     const courseInfo=req.body;
     const user = req.currentUser;
-    handleCourseAuth(user,courseInfo,req.params.id,'update',function (status,message){
-        if(message!=null){
-            res.status(status).json(message);
+    let course= await Course.findByPk(req.params.id);
+    if(course){
+        if(course.userId===user.id){
+            await course.update(courseInfo);
+            res.status(204).end();
         }else{
-            res.status(status).end();
+            res.status(403).json({'msg':'Not Authorized!'});
         }
-    });
+    }else{
+        res.status(404).json({'msg':'Course not found!'});
+    }
 }));
 
 //Route that deletes the course if a user is the owner
 router.delete('/courses/:id',authenticateUser,asyncHandler(async(req,res)=>{
     const courseInfo=req.body;
     const user = req.currentUser;
-    handleCourseAuth(user,courseInfo,req.params.id,'delete',function (status,message){
-        if(message!=null){
-            res.status(status).json(message);
+    let course= await Course.findByPk(req.params.id);
+    if(course){
+        if(course.userId===user.id){
+            await course.destroy();
+            res.status(204).end();
         }else{
-            res.status(status).end();
+            res.status(403).json({'msg':'Not Authorized!'});
         }
-    });
+    }else{
+        res.status(404).json({'msg':'Course not found!'});
+    }
 }));
 
   module.exports = router;

@@ -14,16 +14,22 @@ module.exports = (sequelize) => {
       allowNull:false,
       validate:{
         notNull:{
-            msg: 'Course title cannot be empty.'
+            msg: 'Course title is required.'
+        },
+        notEmpty: {
+            msg: 'Title cannot be empty.'
         }
       }
     },
     description: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       allowNull:false,
       validate:{
         notNull: {
-            msg:'Course description cannot be empty.'
+            msg:'A description is required.'
+        },
+        notEmpty: {
+            msg: 'Description cannot be empty.'
         }
       }
     },
@@ -36,14 +42,13 @@ module.exports = (sequelize) => {
   }, { sequelize });
 
   Course.associate = (models) => {
-    // TODO Add associations.
     Course.belongsTo(models.User, {
       foreignKey: {
         fieldName: 'userId',
         allowNull:false,
         validate:{
             notNull:{
-                msg:'Course owner cannot be empty.'
+                msg:'Course owner is required.'
             }
         }
       },
