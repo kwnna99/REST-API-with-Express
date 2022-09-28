@@ -41,6 +41,7 @@ app.use('/api', routes);
 
 // send 404 if no other route matched
 app.use((req, res) => {
+  const msg=req.body;
   res.status(404).json({
     message: 'Route Not Found',
   });
