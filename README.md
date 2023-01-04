@@ -1,6 +1,11 @@
-## Course & User REST API (created with Express and Sequelize)
+# Course & User REST API (created with Express and Sequelize)
 
-It includes the routes:
+## How to use the project
+1. Run npm install
+2. Run npm start
+
+## Routes included
+
 - A /api/users GET route that will return all properties and values for the currently authenticated User along with a 200 HTTP status code.
 - A /api/users POST route that will create a new user, set the Location header to "/", and return a 201 HTTP status code and no content.
 - A /api/courses GET route that will return all courses including the User associated with each course and a 200 HTTP status code.
